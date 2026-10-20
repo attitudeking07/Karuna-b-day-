@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Karuna ✨</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+    
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: #090014;
+            color: #ffffff;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px 20px 24px 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.45s ease;
+        }
+        .screen.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* --- SCENE 1: CUPID SHOOT --- */
+        #scene-1 {
+            background: radial-gradient(circle at center, #fce7f3 0%, #fbcfe8 45%, #f472b6 100%);
+            color: #9d174d;
+            position: relative;
+        }
+        .target-container {
+            position: relative;
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 95px;
+        }
+        .heart-target {
+            font-size: 5rem;
+            filter: drop-shadow(0 15px 30px rgba(244, 63, 94, 0.4));
+            animation: pulseHeart 1.8s infinite ease-in-out;
+            display: inline-block;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            line-height: 1;
+        }
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.09); }
+        }
+        .bow-stage {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+        #flying-arrow {
+            transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.15s ease;
+            transform-origin: center bottom;
+        }
+        .blast-item {
+            position: absolute;
+            font-size: 1.8rem;
+            pointer-events: none;
+            z-index: 10;
+            animation: blastEffect 1.1s forwards cubic-bezier(0.12, 0.8, 0.32, 1);
+        }
+        @keyframes blastEffect {
+            0% { transform: translate(0, 0) scale(0.4) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(1.15) rotate(var(--rot)); opacity: 0; }
+        }
+
+        /* --- SCENE 2: FLASH GRID --- */
+        #scene-2 {
+            background: #be185d;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* --- SCENE 3: SKYLINE + CONTINUOUS SKYSHOTS + BLOOMING TREE --- */
+        #scene-3 {
+            background: radial-gradient(circle at 50% 20%, #2e0854 0%, #160228 60%, #07000e 100%);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        .city-skyline-bg {
+            position: absolute;
+            bottom: 75px;
+            left: 0;
+            width: 100%;
+            height: 160px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.85;
+        }
+        .tree-stage {
+            position: relative;
+            width: 320px;
+            height: 330px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 5px;
+            z-index: 3;
+        }
+        .tree-svg { width: 100%; height: 100%; z-index: 4; }
+        .tree-branch-path {
+            stroke: #d4a373;
+            stroke-linecap: round;
+            fill: none;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            transition: stroke-dashoffset 1.8s ease-in-out;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+        .tree-foliage {
+            transform: scale(0);
+            transform-origin: center;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .tree-heart {
+            transform: scale(0);
+            transform-origin: center;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 2px 6px rgba(255, 105, 180, 0.5));
+        }
+        .hanging-jhalar {
+            transform: scaleY(0);
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .sparkle-decor {
+            transform: scale(0);
+            transform-origin: center;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: starTwinkle 1.8s infinite alternate ease-in-out;
+        }
+        @keyframes starTwinkle {
+            0% { opacity: 0.6; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 0 8px #ffd166); }
+        }
+        .ambient-glow {
+            position: absolute;
+            width: 290px;
+            height: 290px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(236, 72, 153, 0.18) 50%, transparent 75%);
+            opacity: 0;
+            transition: opacity 1.2s ease;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* --- SCENE 4: 2-TIER CAKE --- */
+        #scene-4 {
+            background: radial-gradient(circle at center, #35143f 0%, #15061e 100%);
+        }
+        .cake-svg-container {
+            width: 280px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .cake-svg-el { width: 100%; height: 100%; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6)); }
+        #cake-bottom-tier {
+            transform: translateY(35px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #cake-top-tier {
+            transform: translateY(25px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #cake-icing-drips {
+            opacity: 0;
+            transform: scaleY(0);
+            transform-origin: top center;
+            transition: all 0.6s ease;
+        }
+        #candle-assembly {
+            opacity: 0;
+            transform: translateY(-25px);
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        #candle-flame-path {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            animation: flameWobble 0.7s infinite alternate;
+            transform-origin: 100px 52px;
+        }
+        @keyframes flameWobble {
+            0% { transform: scale(0.92) rotate(-2deg); }
+            100% { transform: scale(1.08) rotate(3deg); }
+        }
+
+        /* --- SCENE 5: BALLOONS (5 FRIENDSHIP REASONS) --- */
+        #scene-5 {
+            background: radial-gradient(circle at center, #2e1038 0%, #110416 100%);
+            padding-bottom: 20px;
+        }
+        .balloons-flex {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            height: 80px;
+            margin: 8px 0;
+        }
+        .balloon-item {
+            width: 44px;
+            height: 56px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            cursor: pointer;
+            position: relative;
+            box-shadow: inset -3px -3px 8px rgba(0,0,0,0.3);
+            animation: floatBalloon 2.5s infinite ease-in-out alternate;
+        }
+        .balloon-item::after {
+            content: '';
+            position: absolute;
+            bottom: -8px; left: 50%;
+            transform: translateX(-50%);
+            width: 1.5px; height: 14px;
+            background: rgba(255,255,255,0.45);
+        }
+        @keyframes floatBalloon {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+        .reasons-container {
+            width: 100%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 48vh;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        .reason-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 10px 14px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.16);
+            display: none;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease forwards;
+        }
+        .reason-box.revealed { display: block; }
+        .tag-pill {
+            font-size: 0.65rem;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(255, 183, 3, 0.22);
+            color: #ffd166;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2px;
+        }
+        .reason-box p {
+            font-size: 0.82rem;
+            color: #f8fafc;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* --- SCENE 5.5: POLAROID MEMORY LANE --- */
+        #scene-memory {
+            background: radial-gradient(circle at center, #240a35 0%, #0d0116 100%);
+            padding-bottom: 25px;
+        }
+        .memory-track {
+            position: relative;
+            width: 100%;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .string-wire {
+            width: 90%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.25);
+            margin-bottom: -10px;
+            position: relative;
+            z-index: 2;
+        }
+        .pin-clip {
+            position: absolute;
+            top: -6px;
+            width: 12px;
+            height: 14px;
+            background: #ffd166;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+        .polaroid-scroller {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 15px 25px 20px 25px;
+            width: 100%;
+            max-width: 360px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .polaroid-scroller::-webkit-scrollbar { display: none; }
+        .polaroid-card {
+            flex: 0 0 195px;
+            scroll-snap-align: center;
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 10px 10px 16px 10px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: rotate(-1deg);
+            transition: transform 0.3s ease;
+        }
+        .polaroid-card:nth-child(even) { transform: rotate(1.5deg); }
+        .polaroid-card:hover { transform: scale(1.03) rotate(0deg); }
+        
+        .card-svg-frame {
+            width: 100%;
+            height: 180px;
+            border-radius: 10px;
+            background: #fdf2f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #fbcfe8;
+        }
+        .card-caption {
+            margin-top: 10px;
+            color: #1e293b;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* --- SCENE 6: GOLDEN ENVELOPE --- */
+        #scene-6 {
+            background: radial-gradient(circle at center, #35143f 0%, #15061e 100%);
+        }
+        .envelope-stage {
+            position: relative;
+            width: 280px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            cursor: pointer;
+        }
+        .envelope-card {
+            position: relative;
+            width: 270px;
+            height: 175px;
+            background: #df9e38;
+            border-radius: 10px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+            overflow: visible;
+        }
+        .paper-sliding-sheet {
+            position: absolute;
+            top: 15px; left: 15px;
+            width: 240px; height: 145px;
+            background: #fffdf7;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 2;
+            transition: all 1.1s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .paper-sliding-sheet.slide-out {
+            transform: translateY(-110px) scale(1.06);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+            z-index: 8;
+        }
+        .sheet-mini-line {
+            width: 75%; height: 3px;
+            background: #e2d9cc;
+            border-radius: 2px;
+            margin: 4px 0;
+        }
+        .envelope-pocket {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 135px solid #d48e25;
+            border-right: 135px solid #d48e25;
+            border-bottom: 95px solid #c78018;
+            border-top: 80px solid transparent;
+            z-index: 5;
+            border-radius: 0 0 10px 10px;
+            pointer-events: none;
+        }
+        .envelope-lid {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 135px solid transparent;
+            border-right: 135px solid transparent;
+            border-top: 96px solid #e09f3e;
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 6;
+        }
+        .envelope-lid.open {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+        .gold-seal {
+            position: absolute;
+            top: 72px; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px; height: 44px;
+            background: #e11d48;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 7;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* --- SCENE 7: CENTER UNFOLDING LETTER WITH RESPECTFUL TONE --- */
+        #scene-7 {
+            background: radial-gradient(circle at center, #260d2e 0%, #100314 100%);
+            padding: 25px 20px 20px 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        .letter-scroll-wrapper {
+            width: 100%;
+            max-width: 340px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .letter-scroll {
+            background: #fffdf7;
+            color: #2b2b2b;
+            width: 100%;
+            border-radius: 18px;
+            padding: 22px 18px;
+            text-align: left;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            line-height: 1.55;
+            font-size: 0.85rem;
+            min-height: 120px;
+            max-height: 72vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.2);
+            opacity: 0;
+            transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+        }
+        .letter-scroll.unfolded {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .letter-scroll h3 {
+            font-size: 1.25rem;
+            color: #881337;
+            margin-bottom: 12px;
+        }
+        .typewriter-body {
+            color: #4a4a4a;
+            white-space: pre-line;
+            font-size: 0.86rem;
+            line-height: 1.6;
+            min-height: 80px;
+        }
+        .cursor-blink {
+            display: inline-block;
+            width: 2px;
+            height: 14px;
+            background: #e11d48;
+            margin-left: 2px;
+            vertical-align: middle;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .letter-sign {
+            text-align: right;
+            font-weight: 600;
+            color: #881337;
+            margin-top: 14px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        /* --- SCENE 8: FINAL CELEBRATION --- */
+        #scene-8 {
+            background: radial-gradient(circle at center, #3c094d 0%, #12001a 100%);
+            justify-content: center;
+            gap: 16px;
+        }
+        .avatar-frame {
+            position: relative;
+            width: 175px;
+            height: 175px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(244, 114, 182, 0.45) 0%, rgba(251, 207, 232, 0.15) 60%, transparent 80%);
+            border: 2.5px solid rgba(255, 209, 102, 0.85);
+            box-shadow: 0 0 30px rgba(244, 114, 182, 0.7), inset 0 0 20px rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: avatarFloat 3s infinite ease-in-out alternate;
+        }
+        @keyframes avatarFloat {
+            0% { transform: translateY(0); box-shadow: 0 0 25px rgba(244, 114, 182, 0.6); }
+            100% { transform: translateY(-10px); box-shadow: 0 0 45px rgba(236, 72, 153, 0.9); }
+        }
+        .avatar-vector { width: 150px; height: 150px; }
+
+        .cta-button {
+            background: linear-gradient(135deg, #fb7185, #e11d48);
+            color: white;
+            border: none;
+            padding: 12px 36px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
+            margin-top: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-button:active { transform: scale(0.96); }
+
+        .hint-text {
+            font-size: 0.76rem;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Soft Instrumental Background Audio -->
+    <audio id="bg-audio" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- SCENE 1: CUPID ARROW -->
+    <div id="scene-1" class="screen active">
+        <div class="target-container">
+            <div class="heart-target" id="main-heart">🎯</div>
+            <div id="blast-container" style="position:absolute; width:100%; height:100%; pointer-events:none; display:flex; justify-content:center; align-items:center;"></div>
+        </div>
+        <p style="font-style: italic; font-weight: 500; font-size: 1.05rem; margin-top:-10px; color:#9d174d;">a special surprise, just for you</p>
+        
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="bow-stage" onclick="triggerArrow()">
+                <svg viewBox="0 0 100 120" style="width:100%; height:100%; overflow:visible;">
+                    <path d="M 15,85 Q 50,35 85,85" fill="none" stroke="#9d174d" stroke-width="4.5" stroke-linecap="round"/>
+                    <line x1="15" y1="85" x2="85" y2="85" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    
+                    <g id="flying-arrow">
+                        <line x1="50" y1="85" x2="50" y2="28" stroke="#e11d48" stroke-width="3.8"/>
+                        <polygon points="44,28 50,15 56,28" fill="#be123c"/>
+                        <circle cx="50" cy="86" r="4.5" fill="#ffd166"/>
+                    </g>
+                </svg>
+            </div>
+            <p class="hint-text" style="color:#9d174d; font-weight: 600; letter-spacing: 2px;">TAP TO SHOOT</p>
+        </div>
+    </div>
+
+    <!-- SCENE 2: FLASH TITLE -->
+    <div id="scene-2" class="screen" onclick="switchScene(3)">
+        <p style="font-size: 1.1rem; opacity: 0.9; font-style: italic;">celebrating someone wonderful...</p>
+        <h1 style="font-size: 3.2rem; font-weight: 700; line-height: 1.15;">Happy<br>Birthday</h1>
+        <div style="width: 70px; height: 3px; background: #ffd166; border-radius: 2px; margin: 5px auto;"></div>
+        <p style="font-size: 1.1rem; font-weight: 600; color: #fde047;">Karuna ✨</p>
+        <p class="hint-text" style="margin-top: 35px;">tap anywhere to continue</p>
+    </div>
+
+    <!-- SCENE 3: NIGHT CITY SKYLINE + FIREWORKS + CELEBRATION TREE -->
+    <div id="scene-3" class="screen">
+        <svg class="city-skyline-bg" viewBox="0 0 400 160" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="cityGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#1b0533"/>
+                    <stop offset="100%" stop-color="#0a0014"/>
+                </linearGradient>
+            </defs>
+            <rect x="10" y="80" width="35" height="80" fill="url(#cityGrad)" rx="3"/>
+            <rect x="50" y="55" width="40" height="105" fill="url(#cityGrad)" rx="3"/>
+            <rect x="95" y="90" width="30" height="70" fill="url(#cityGrad)" rx="2"/>
+            <rect x="130" y="40" width="45" height="120" fill="url(#cityGrad)" rx="4"/>
+            <rect x="180" y="70" width="38" height="90" fill="url(#cityGrad)" rx="3"/>
+            <rect x="222" y="45" width="42" height="115" fill="url(#cityGrad)" rx="4"/>
+            <rect x="268" y="75" width="35" height="85" fill="url(#cityGrad)" rx="3"/>
+            <rect x="308" y="60" width="40" height="100" fill="url(#cityGrad)" rx="3"/>
+            <rect x="352" y="85" width="38" height="75" fill="url(#cityGrad)" rx="2"/>
+
+            <!-- Antennas & Windows -->
+            <line x1="152" y1="40" x2="152" y2="15" stroke="#ec4899" stroke-width="1.5"/>
+            <circle cx="152" cy="14" r="2.5" fill="#f43f5e"/>
+            <circle cx="65" cy="70" r="1.5" fill="#fef08a" opacity="0.8"/>
+            <circle cx="75" cy="70" r="1.5" fill="#fef08a" opacity="0.8"/>
+            <circle cx="145" cy="55" r="1.5" fill="#fef08a" opacity="0.8"/>
+            <circle cx="160" cy="55" r="1.5" fill="#38bdf8" opacity="0.8"/>
+            <circle cx="235" cy="60" r="1.5" fill="#fef08a" opacity="0.8"/>
+            <circle cx="250" cy="60" r="1.5" fill="#f472b6" opacity="0.8"/>
+        </svg>
+
+        <div class="tree-stage">
+            <div class="ambient-glow" id="tree-ambient-glow"></div>
+            
+            <svg class="tree-svg" viewBox="0 0 300 320">
+                <g id="tree-branches">
+                    <path class="tree-branch-path" d="M 150,300 C 150,240 148,200 150,170" stroke-width="8"/>
+                    <path class="tree-branch-path" d="M 150,210 C 130,180 90,165 70,120" stroke-width="5.5"/>
+                    <path class="tree-branch-path" d="M 150,210 C 170,180 210,165 230,120" stroke-width="5.5"/>
+                    <path class="tree-branch-path" d="M 150,180 C 145,150 120,135 115,80" stroke-width="4.5"/>
+                    <path class="tree-branch-path" d="M 150,180 C 155,150 180,135 185,80" stroke-width="4.5"/>
+                    <path class="tree-branch-path" d="M 150,170 L 150,75" stroke-width="4"/>
+                </g>
+
+                <g id="tree-canopy">
+                    <circle class="tree-foliage" cx="65" cy="115" r="28" fill="#a855f7" opacity="0.55"/>
+                    <circle class="tree-foliage" cx="235" cy="115" r="28" fill="#a855f7" opacity="0.55"/>
+                    <circle class="tree-foliage" cx="115" cy="80" r="32" fill="#ec4899" opacity="0.6"/>
+                    <circle class="tree-foliage" cx="185" cy="80" r="32" fill="#ec4899" opacity="0.6"/>
+                    <circle class="tree-foliage" cx="150" cy="70" r="36" fill="#f43f5e" opacity="0.65"/>
+                    <circle class="tree-foliage" cx="150" cy="120" r="38" fill="#c084fc" opacity="0.5"/>
+                </g>
+
+                <g id="tree-hearts">
+                    <path class="tree-heart" d="M 150,60 C 145,50 135,50 135,58 C 135,68 150,78 150,78 C 150,78 165,68 165,58 C 165,50 155,50 150,60 Z" fill="#ff758f"/>
+                    <path class="tree-heart" d="M 68,105 C 63,95 53,95 53,103 C 53,113 68,123 68,123 C 68,123 83,113 83,103 C 83,95 73,95 68,105 Z" fill="#ffd166"/>
+                    <path class="tree-heart" d="M 232,105 C 227,95 217,95 217,103 C 217,113 232,123 232,123 C 232,123 247,113 247,103 C 247,95 237,95 232,105 Z" fill="#f472b6"/>
+                    <path class="tree-heart" d="M 115,75 C 111,67 103,67 103,73 C 103,81 115,89 115,89 C 115,89 127,81 127,73 C 127,67 119,67 115,75 Z" fill="#c084fc"/>
+                    <path class="tree-heart" d="M 185,75 C 181,67 173,67 173,73 C 173,81 185,89 185,89 C 185,89 197,81 197,73 C 197,67 189,67 185,75 Z" fill="#ff8fa3"/>
+                </g>
+
+                <g id="hanging-decorations">
+                    <path class="hanging-jhalar" d="M 60,135 Q 100,175 140,145" fill="none" stroke="#ffd166" stroke-width="1.8" stroke-dasharray="3,3"/>
+                    <circle class="hanging-jhalar" cx="75" cy="148" r="3" fill="#ff758f"/>
+                    <circle class="hanging-jhalar" cx="100" cy="162" r="3.5" fill="#ffd166"/>
+                    <path class="hanging-jhalar" d="M 160,145 Q 200,175 240,135" fill="none" stroke="#ffd166" stroke-width="1.8" stroke-dasharray="3,3"/>
+                    <circle class="hanging-jhalar" cx="200" cy="162" r="3.5" fill="#ffd166"/>
+                    <circle class="hanging-jhalar" cx="225" cy="148" r="3" fill="#ff758f"/>
+                </g>
+
+                <g id="sparkle-elements">
+                    <polygon class="sparkle-decor" points="150,38 152,45 159,45 153,49 155,56 150,52 145,56 147,49 141,45 148,45" fill="#ffd166"/>
+                    <polygon class="sparkle-decor" points="105,62 107,67 112,67 108,70 110,75 105,72 100,75 102,70 98,67 103,67" fill="#ffffff"/>
+                    <polygon class="sparkle-decor" points="195,62 197,67 202,67 198,70 200,75 195,72 190,75 192,70 188,67 193,67" fill="#ffffff"/>
+                </g>
+            </svg>
+        </div>
+
+        <div style="margin-bottom: 10px; z-index: 5;">
+            <p style="font-style: italic; font-size: 0.88rem; color: #f472b6;">a moment of celebration</p>
+            <h2 style="font-size: 1.9rem; color: #ffd166; text-shadow: 0 0 15px rgba(255,209,102,0.6); margin: 4px 0;">Happy Birthday, Karuna</h2>
+            <p style="font-size: 0.85rem; color: #e9d5ff; font-weight: 500;">wishing you endless happiness & peace ✨</p>
+            <button class="cta-button" id="tree-continue-btn" style="opacity:0; pointer-events:none; transition:opacity 0.5s ease; margin-top:10px; background: linear-gradient(135deg, #a855f7, #ec4899);" onclick="switchScene(4)">Continue ✨</button>
+        </div>
+    </div>
+
+    <!-- SCENE 4: 2-TIER CAKE -->
+    <div id="scene-4" class="screen">
+        <h3 style="font-size: 1.35rem; margin-top: 15px;">Make a wish 🎂</h3>
+
+        <div class="cake-svg-container">
+            <svg class="cake-svg-el" viewBox="0 0 200 220">
+                <ellipse cx="100" cy="195" rx="88" ry="14" fill="#64748b"/>
+                <ellipse cx="100" cy="192" rx="84" ry="12" fill="#cbd5e1"/>
+                <ellipse cx="100" cy="190" rx="80" ry="10" fill="#f8fafc"/>
+
+                <g id="cake-bottom-tier">
+                    <path d="M 28,140 L 28,175 C 28,190 172,190 172,175 L 172,140 Z" fill="#e11d48"/>
+                    <path d="M 28,154 C 55,168 145,168 172,154 L 172,162 C 145,176 55,176 28,162 Z" fill="#881337" opacity="0.45"/>
+                    <ellipse cx="100" cy="140" rx="72" ry="14" fill="#f43f5e"/>
+                    <circle cx="45" cy="176" r="4" fill="#fff"/>
+                    <circle cx="80" cy="180" r="4" fill="#fff"/>
+                    <circle cx="120" cy="180" r="4" fill="#fff"/>
+                    <circle cx="155" cy="176" r="4" fill="#fff"/>
+                </g>
+
+                <g id="cake-top-tier">
+                    <path d="M 50,95 L 50,135 C 50,147 150,147 150,135 L 150,95 Z" fill="#fda4af"/>
+                    <ellipse cx="100" cy="95" rx="50" ry="11" fill="#ffe4e6"/>
+                </g>
+
+                <g id="cake-icing-drips">
+                    <path d="M 50,95 C 55,108 60,102 65,115 C 72,100 80,118 90,105 C 100,122 110,102 120,116 C 130,103 140,115 150,95 C 150,85 50,85 50,95 Z" fill="#ffffff" filter="drop-shadow(0 3px 2px rgba(0,0,0,0.15))"/>
+                    <circle cx="75" cy="92" r="5" fill="#be123c"/>
+                    <circle cx="100" cy="88" r="5.5" fill="#be123c"/>
+                    <circle cx="125" cy="92" r="5" fill="#be123c"/>
+                </g>
+
+                <g id="candle-assembly" onclick="blowCandle()">
+                    <rect x="96.5" y="45" width="7" height="42" rx="3.5" fill="#ffd166"/>
+                    <line x1="100" y1="45" x2="100" y2="37" stroke="#334155" stroke-width="1.8"/>
+                    
+                    <g id="candle-flame-path">
+                        <ellipse cx="100" cy="26" rx="14" ry="18" fill="rgba(251, 191, 36, 0.28)"/>
+                        <path d="M 100,12 C 94,22 94,34 100,36 C 106,34 106,22 100,12 Z" fill="#f59e0b"/>
+                        <path d="M 100,18 C 96,24 97,32 100,33 C 103,32 104,24 100,18 Z" fill="#fef08a"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+
+        <div>
+            <p id="cake-narrative" style="font-size: 0.92rem; color: #f472b6; margin-bottom: 6px;">Baking something special...</p>
+            <p class="hint-text" id="cake-instruction">baking in progress...</p>
+            <button class="cta-button" id="cake-continue-btn" style="display:none; margin-top:8px;" onclick="switchScene(5)">Continue ✨</button>
+        </div>
+    </div>
+
+    <!-- SCENE 5: 5 HEARTFELT FRIENDSHIP REASONS -->
+    <div id="scene-5" class="screen">
+        <div style="margin-top: 15px;">
+            <h3 style="font-size: 1.3rem;">Pop the balloons 🎈</h3>
+            <p style="font-size: 0.76rem; color: rgba(255,255,255,0.7); margin-top: 2px;">5 balloons. Each holds a genuine thought for you. Pop them all 🎈</p>
+        </div>
+
+        <div class="balloons-flex" id="balloons-flex">
+            <div class="balloon-item" style="background: #fb7185;" onclick="popBalloon(0, this)"></div>
+            <div class="balloon-item" style="background: #ffd166;" onclick="popBalloon(1, this)"></div>
+            <div class="balloon-item" style="background: #c084fc;" onclick="popBalloon(2, this)"></div>
+            <div class="balloon-item" style="background: #38bdf8;" onclick="popBalloon(3, this)"></div>
+            <div class="balloon-item" style="background: #34d399;" onclick="popBalloon(4, this)"></div>
+        </div>
+
+        <div class="reasons-container">
+            <div class="reason-box" id="r-0">
+                <span class="tag-pill">THOUGHT NO.1 🎈</span>
+                <p>No matter how time passes, you will always hold a place of genuine respect in my life ✨</p>
+            </div>
+            <div class="reason-box" id="r-1">
+                <span class="tag-pill">THOUGHT NO.2 🎈</span>
+                <p>I admire how strong, independent, and graceful you are in everything you do 🌸</p>
+            </div>
+            <div class="reason-box" id="r-2">
+                <span class="tag-pill">THOUGHT NO.3 🎈</span>
+                <p>The bond and understanding we share today as friends is something truly rare and precious 🤍</p>
+            </div>
+            <div class="reason-box" id="r-3">
+                <span class="tag-pill">THOUGHT NO.4 🎈</span>
+                <p>I genuinely wish you achieve all your biggest dreams and stay smiling through every phase 💫</p>
+            </div>
+            <div class="reason-box" id="r-4">
+                <span class="tag-pill">THOUGHT NO.5 🎈</span>
+                <p>Always remember that whenever you need a sincere friend to count on, I'm here 🥂</p>
+            </div>
+        </div>
+
+        <button class="cta-button" id="next-from-balloons" style="display:none;" onclick="switchScene('memory')">Continue ✨</button>
+    </div>
+
+    <!-- SCENE 5.5: MEMORY LANE (AESTHETIC POLAROID SCROLLER) -->
+    <div id="scene-memory" class="screen">
+        <div style="margin-top: 15px;">
+            <h3 style="font-size: 1.35rem; font-weight: 600;">Cherished Memories ✨</h3>
+            <p style="font-size: 0.78rem; color: rgba(255,255,255,0.7); margin-top: 2px;">swipe through 🤍</p>
+        </div>
+
+        <div class="memory-track">
+            <div class="string-wire">
+                <div class="pin-clip" style="left: 15%;"></div>
+                <div class="pin-clip" style="left: 48%;"></div>
+                <div class="pin-clip" style="left: 80%;"></div>
+            </div>
+
+            <div class="polaroid-scroller">
+                <div class="polaroid-card">
+                    <div class="card-svg-frame">
+                        <svg viewBox="0 0 160 160">
+                            <!-- Golden sun & mountain calm path -->
+                            <circle cx="80" cy="50" r="24" fill="#fde047" opacity="0.8"/>
+                            <path d="M 10,130 L 60,70 L 100,120 L 140,85 L 160,130 Z" fill="#cbd5e1"/>
+                            <path d="M 30,135 L 75,90 L 115,135 Z" fill="#94a3b8"/>
+                            <circle cx="80" cy="115" r="4" fill="#e11d48"/>
+                        </svg>
+                    </div>
+                    <p class="card-caption">From Then Till Now 🕊️</p>
+                </div>
+
+                <div class="polaroid-card">
+                    <div class="card-svg-frame">
+                        <svg viewBox="0 0 160 160">
+                            <!-- Coffee mugs & peace sign -->
+                            <rect x="35" y="75" width="35" height="42" rx="6" fill="#e2e8f0"/>
+                            <path d="M 35,85 C 22,85 22,105 35,105" stroke="#94a3b8" stroke-width="4" fill="none"/>
+                            <rect x="90" y="75" width="35" height="42" rx="6" fill="#fecdd3"/>
+                            <path d="M 125,85 C 138,85 138,105 125,105" stroke="#fb7185" stroke-width="4" fill="none"/>
+                            <path d="M 52,65 Q 48,55 52,48" stroke="#cbd5e1" stroke-width="2" fill="none"/>
+                            <path d="M 107,65 Q 103,55 107,48" stroke="#f472b6" stroke-width="2" fill="none"/>
+                            <circle cx="80" cy="40" r="10" fill="#ffd166"/>
+                        </svg>
+                    </div>
+                    <p class="card-caption">A Cherished Bond ☕</p>
+                </div>
+
+                <div class="polaroid-card">
+                    <div class="card-svg-frame">
+                        <svg viewBox="0 0 160 160">
+                            <!-- Blooming lotus & light -->
+                            <circle cx="80" cy="80" r="45" fill="#fce7f3"/>
+                            <path d="M 80,45 C 65,70 70,105 80,115 C 90,105 95,70 80,45 Z" fill="#ec4899"/>
+                            <path d="M 60,65 C 50,85 62,105 75,115 C 65,100 55,85 60,65 Z" fill="#f472b6"/>
+                            <path d="M 100,65 C 110,85 98,105 85,115 C 95,100 105,85 100,65 Z" fill="#f472b6"/>
+                            <circle cx="80" cy="40" r="3" fill="#ffd166"/>
+                        </svg>
+                    </div>
+                    <p class="card-caption">Grace & Strength 🌸</p>
+                </div>
+
+                <div class="polaroid-card">
+                    <div class="card-svg-frame">
+                        <svg viewBox="0 0 160 160">
+                            <!-- Starry skies & wishes -->
+                            <circle cx="80" cy="80" r="48" fill="#1e1b4b"/>
+                            <polygon points="80,50 83,60 93,60 85,66 88,76 80,70 72,76 75,66 67,60 77,60" fill="#fde047"/>
+                            <circle cx="50" cy="65" r="2.5" fill="#ffffff"/>
+                            <circle cx="110" cy="70" r="2.5" fill="#ffffff"/>
+                            <circle cx="95" cy="100" r="2" fill="#ffd166"/>
+                            <circle cx="65" cy="105" r="2" fill="#ffd166"/>
+                        </svg>
+                    </div>
+                    <p class="card-caption">Wishing You The Best 🌟</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="cta-button" onclick="switchScene(6)" style="background: linear-gradient(135deg, #f59e0b, #e11d48);">Keep going ✨</button>
+    </div>
+
+    <!-- SCENE 6: ENVELOPE (SEALED WITH 'K') -->
+    <div id="scene-6" class="screen">
+        <div style="margin-top: 25px;">
+            <h3 style="font-size: 1.4rem;">A message for you, Karuna...</h3>
+            <p style="font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-top: 4px;">Dipu wrote you a note.</p>
+        </div>
+
+        <div class="envelope-stage" onclick="openLetterEnvelope()">
+            <div class="envelope-card">
+                <div class="envelope-lid" id="envelope-lid"></div>
+                <div class="gold-seal" id="gold-seal">K</div>
+                
+                <div class="paper-sliding-sheet" id="paper-sliding-sheet">
+                    <span style="font-size:1.2rem; margin-bottom:4px;">✨</span>
+                    <div class="sheet-mini-line" style="width:85%;"></div>
+                    <div class="sheet-mini-line"></div>
+                    <div class="sheet-mini-line" style="width:60%;"></div>
+                </div>
+
+                <div class="envelope-pocket"></div>
+            </div>
+        </div>
+
+        <p class="hint-text" id="envelope-tap-hint">Tap to open your letter</p>
+    </div>
+
+    <!-- SCENE 7: CENTER UNFOLDING LETTER WITH RESPECTFUL, MATURE FRIENDSHIP TONE -->
+    <div id="scene-7" class="screen">
+        <div class="letter-scroll-wrapper">
+            <div class="letter-scroll" id="letter-scroll-box">
+                <h3>Dear Karuna,</h3>
+                <div class="typewriter-body">
+                    <span id="typed-content"></span><span class="cursor-blink" id="type-cursor"></span>
+                </div>
+                <div class="letter-sign" id="letter-signature">
+                    With sincere respect and care,<br>— Dipu
+                </div>
+            </div>
+        </div>
+
+        <button class="cta-button" id="letter-continue-btn" style="opacity:0; pointer-events:none; transition:opacity 0.6s ease;" onclick="switchScene(8)">Continue 🎁</button>
+    </div>
+
+    <!-- SCENE 8: FINAL CELEBRATION (ELEGANT GRACEFUL AVATAR + BLESSINGS) -->
+    <div id="scene-8" class="screen">
+        <div>
+            <h1 style="font-size: 2.5rem; line-height: 1.15; color: #ffffff;">HAPPY<br>BIRTHDAY</h1>
+            <h2 style="font-size: 2.2rem; color: #ffd166; font-family: 'Dancing Script', cursive;">Karuna!</h2>
+        </div>
+
+        <div class="avatar-frame">
+            <svg class="avatar-vector" viewBox="0 0 160 160">
+                <!-- Graceful elegant aesthetic vector portrait -->
+                <circle cx="25" cy="35" r="2.5" fill="#ffd166"/>
+                <circle cx="135" cy="40" r="2" fill="#ffd166"/>
+                
+                <path d="M 40,70 Q 25,115 32,145 Q 80,155 128,145 Q 135,115 120,70 Z" fill="#4a044e"/>
+                <path d="M 48,85 Q 38,120 44,142 Q 80,150 116,142 Q 122,120 112,85 Z" fill="#701a75"/>
+
+                <path d="M 64,115 L 96,115 L 115,155 Q 80,160 45,155 Z" fill="#f472b6"/>
+                <path d="M 52,142 Q 80,152 108,142 Q 80,158 52,142 Z" fill="#fbcfe8"/>
+                
+                <rect x="74" y="98" width="12" height="12" fill="#fde2e4" rx="3"/>
+                <ellipse cx="80" cy="74" rx="38" ry="32" fill="#ffecd1"/>
+
+                <ellipse cx="56" cy="80" rx="7.5" ry="4.5" fill="#fb7185" opacity="0.55"/>
+                <ellipse cx="104" cy="80" rx="7.5" ry="4.5" fill="#fb7185" opacity="0.55"/>
+
+                <ellipse cx="62" cy="73" rx="7.5" ry="10" fill="#2d0036"/>
+                <circle cx="60" cy="69" r="3.2" fill="#ffffff"/>
+                <path d="M 54,64 Q 62,60 70,64" stroke="#4a154b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                
+                <ellipse cx="98" cy="73" rx="7.5" ry="10" fill="#2d0036"/>
+                <circle cx="96" cy="69" r="3.2" fill="#ffffff"/>
+                <path d="M 90,64 Q 98,60 106,64" stroke="#4a154b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+                <path d="M 76,83 Q 80,88 84,83" stroke="#e11d48" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+                <path d="M 42,66 C 48,45 60,42 74,48 C 84,42 108,44 118,66 C 114,56 102,52 92,54 C 80,50 64,52 42,66 Z" fill="#4a044e"/>
+                
+                <!-- Tiara / Headpiece -->
+                <path d="M 66,48 L 72,38 L 80,44 L 88,38 L 94,48 Z" fill="#ffd166" stroke="#f59e0b" stroke-width="1"/>
+                <circle cx="80" cy="42" r="2.5" fill="#e11d48"/>
+            </svg>
+        </div>
+
+        <div style="font-family: 'Dancing Script', cursive; font-size: 2.1rem; color: #ffffff; text-shadow: 0 0 15px #38bdf8;">
+            May Mahadev Bless You Karuna
+        </div>
+
+        <button class="cta-button" onclick="location.reload()" style="padding: 10px 28px; font-size:0.85rem; background: rgba(255,255,255,0.15); box-shadow:none;">Replay Experience ↺</button>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+
+        function playMusic() {
+            audio.play().catch(e => console.log(e));
+        }
+
+        let skyshotsTimer = null;
+
+        function switchScene(num) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('scene-' + num);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            if (num !== 3 && skyshotsTimer) {
+                clearInterval(skyshotsTimer);
+                skyshotsTimer = null;
+            }
+
+            if (num === 3) {
+                startTreeCelebrationAnimation();
+            } else if (num === 4) {
+                startCakeAutoBaking();
+            } else if (num === 7) {
+                startUnfoldingLetterAnimation();
+            } else if (num === 8) {
+                fireConfettiRain();
+            }
+        }
+
+        // 1. Cupid Arrow Calculation & Burst
+        let arrowFired = false;
+        function triggerArrow() {
+            if (arrowFired) return;
+            arrowFired = true;
+
+            playMusic();
+            const arrow = document.getElementById('flying-arrow');
+            const target = document.getElementById('main-heart');
+            const blastBox = document.getElementById('blast-container');
+
+            const arrowRect = arrow.getBoundingClientRect();
+            const targetRect = target.getBoundingClientRect();
+
+            const targetCenterY = targetRect.top + targetRect.height / 2;
+            const arrowTipY = arrowRect.top;
+            const distance = targetCenterY - arrowTipY;
+
+            arrow.style.transform = `translateY(${distance}px)`;
+
+            setTimeout(() => {
+                arrow.style.opacity = '0';
+                target.style.transform = "scale(1.35) rotate(-6deg)";
+
+                const chocoEmojis = ['🍫', '🍬', '✨', '🎉', '🎊', '🎀', '🌸', '🧁'];
+                for (let i = 0; i < 20; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'blast-item';
+                    el.innerText = chocoEmojis[Math.floor(Math.random() * chocoEmojis.length)];
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const blastDist = Math.random() * 150 + 60;
+                    const dx = Math.cos(angle) * blastDist + 'px';
+                    const dy = Math.sin(angle) * blastDist + 'px';
+                    const rot = (Math.random() * 360 - 180) + 'deg';
+                    
+                    el.style.setProperty('--dx', dx);
+                    el.style.setProperty('--dy', dy);
+                    el.style.setProperty('--rot', rot);
+                    blastBox.appendChild(el);
+                }
+
+                confetti({
+                    particleCount: 55,
+                    spread: 80,
+                    origin: { y: targetRect.top / window.innerHeight },
+                    colors: ['#fb7185', '#ffd166', '#e11d48', '#38bdf8', '#ffffff']
+                });
+                
+                setTimeout(() => {
+                    switchScene(2);
+                }, 750);
+            }, 420);
+        }
+
+        function fireCitySkyshot() {
+            confetti({
+                particleCount: 26,
+                angle: Math.random() * 50 + 65,
+                spread: 75,
+                origin: { x: Math.random() * 0.8 + 0.1, y: Math.random() * 0.35 + 0.1 },
+                colors: ['#fb7185', '#ffd166', '#c084fc', '#38bdf8', '#e11d48', '#ffffff'],
+                shapes: ['circle', 'star'],
+                ticks: 180
+            });
+        }
+
+        // 2. Tree Animation
+        function startTreeCelebrationAnimation() {
+            const branches = document.querySelectorAll('.tree-branch-path');
+            const foliage = document.querySelectorAll('.tree-foliage');
+            const hearts = document.querySelectorAll('.tree-heart');
+            const jhalar = document.querySelectorAll('.hanging-jhalar');
+            const sparkles = document.querySelectorAll('.sparkle-decor');
+            const glow = document.getElementById('tree-ambient-glow');
+            const btn = document.getElementById('tree-continue-btn');
+
+            branches.forEach(b => b.style.strokeDashoffset = '500');
+            foliage.forEach(f => f.style.transform = 'scale(0)');
+            hearts.forEach(h => h.style.transform = 'scale(0)');
+            jhalar.forEach(j => j.style.transform = 'scaleY(0)');
+            sparkles.forEach(s => s.style.transform = 'scale(0)');
+            glow.style.opacity = '0';
+            btn.style.opacity = '0';
+            btn.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                branches.forEach(b => b.style.strokeDashoffset = '0');
+            }, 200);
+
+            setTimeout(() => {
+                foliage.forEach((f, idx) => {
+                    setTimeout(() => f.style.transform = 'scale(1)', idx * 70);
+                });
+                hearts.forEach((h, idx) => {
+                    setTimeout(() => h.style.transform = 'scale(1)', idx * 90);
+                });
+            }, 1100);
+
+            setTimeout(() => {
+                jhalar.forEach(j => j.style.transform = 'scaleY(1)');
+            }, 1800);
+
+            setTimeout(() => {
+                sparkles.forEach(s => s.style.transform = 'scale(1)');
+                glow.style.opacity = '1';
+                
+                fireCitySkyshot();
+                if (!skyshotsTimer) {
+                    skyshotsTimer = setInterval(fireCitySkyshot, 1500);
+                }
+
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            }, 2400);
+        }
+
+        // 3. 2-Tier Cake Animation
+        function startCakeAutoBaking() {
+            const bottomTier = document.getElementById('cake-bottom-tier');
+            const topTier = document.getElementById('cake-top-tier');
+            const icing = document.getElementById('cake-icing-drips');
+            const candle = document.getElementById('candle-assembly');
+            const flame = document.getElementById('candle-flame-path');
+            const narrative = document.getElementById('cake-narrative');
+            const instruction = document.getElementById('cake-instruction');
+
+            bottomTier.style.opacity = '0';
+            bottomTier.style.transform = 'translateY(35px)';
+            topTier.style.opacity = '0';
+            topTier.style.transform = 'translateY(25px)';
+            icing.style.opacity = '0';
+            icing.style.transform = 'scaleY(0)';
+            candle.style.opacity = '0';
+            candle.style.transform = 'translateY(-25px)';
+            flame.style.opacity = '0';
+
+            narrative.innerText = "Baking sweet celebration layers...";
+            instruction.innerText = "baking in progress...";
+
+            setTimeout(() => {
+                bottomTier.style.opacity = '1';
+                bottomTier.style.transform = 'translateY(0)';
+            }, 300);
+
+            setTimeout(() => {
+                topTier.style.opacity = '1';
+                topTier.style.transform = 'translateY(0)';
+                narrative.innerText = "Adding delicate sponge tier...";
+            }, 900);
+
+            setTimeout(() => {
+                icing.style.opacity = '1';
+                icing.style.transform = 'scaleY(1)';
+                narrative.innerText = "Glazing with vanilla drips & cherries...";
+            }, 1600);
+
+            setTimeout(() => {
+                candle.style.opacity = '1';
+                candle.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    flame.style.opacity = '1';
+                    narrative.innerText = "Make a wish 🕯️";
+                    instruction.innerText = "👉 Tap the candle to blow it out!";
+                    instruction.style.color = "#ffd166";
+                    instruction.style.fontWeight = "600";
+                }, 400);
+            }, 2300);
+        }
+
+        function blowCandle() {
+            const flame = document.getElementById('candle-flame-path');
+            if (flame.style.opacity === '0') return;
+
+            flame.style.opacity = '0';
+
+            confetti({
+                particleCount: 65,
+                spread: 75,
+                origin: { y: 0.55 },
+                colors: ['#fb7185', '#ffd166', '#38bdf8', '#ffffff']
+            });
+
+            document.getElementById('cake-narrative').innerText = "Wish made! Happy Birthday, Karuna! 🎂";
+            document.getElementById('cake-instruction').innerText = "Wishing you pure happiness ✨";
+            document.getElementById('cake-continue-btn').style.display = 'inline-block';
+        }
+
+        // 4. Pop Balloon
+        let pops = 0;
+        function popBalloon(idx, el) {
+            playMusic();
+            if (el.style.visibility === 'hidden') return;
+            el.style.visibility = 'hidden';
+
+            confetti({
+                particleCount: 25,
+                spread: 45,
+                origin: { y: 0.35 }
+            });
+
+            const card = document.getElementById('r-' + idx);
+            if (card) {
+                card.classList.add('revealed');
+            }
+
+            pops++;
+            if (pops >= 5) {
+                document.getElementById('next-from-balloons').style.display = 'inline-block';
+            }
+        }
+
+        // 5. Envelope Opening & Paper Slide-Out
+        let isOpeningEnvelope = false;
+        function openLetterEnvelope() {
+            if (isOpeningEnvelope) return;
+            isOpeningEnvelope = true;
+
+            playMusic();
+            const lid = document.getElementById('envelope-lid');
+            const seal = document.getElementById('gold-seal');
+            const paper = document.getElementById('paper-sliding-sheet');
+            const hint = document.getElementById('envelope-tap-hint');
+
+            hint.innerText = "Opening your letter...";
+
+            seal.style.transform = 'translate(-50%, -50%) scale(0)';
+            seal.style.opacity = '0';
+            lid.classList.add('open');
+
+            setTimeout(() => {
+                paper.classList.add('slide-out');
+                confetti({
+                    particleCount: 45,
+                    spread: 60,
+                    origin: { y: 0.55 },
+                    colors: ['#ffd166', '#fb7185', '#ffffff']
+                });
+            }, 450);
+
+            setTimeout(() => {
+                switchScene(7);
+                isOpeningEnvelope = false;
+            }, 1500);
+        }
+
+        // 6. Mature, Respectful & Warm Letter for Karuna
+        const fullLetterParagraphs = [
+            "As another year adds to your journey, I just wanted to take a moment to say how much I truly respect and appreciate having you in my life as a dear friend 🤍\n\n",
+            "Life moves forward, seasons change, but the mutual understanding and genuine goodwill we share is something I value deeply. Seeing you grow, tackle every challenge with patience, and carve your own path inspires me every day...\n\n",
+            "On your special day, I wholeheartedly pray that you find immense peace, achieve every goal you have worked tirelessly for, and always remain surrounded by genuine joy and love 🌸\n\n",
+            "Happy Birthday Karuna. Always wishing nothing but the absolute best for you ✨"
+        ];
+
+        function startUnfoldingLetterAnimation() {
+            const scrollBox = document.getElementById('letter-scroll-box');
+            const container = document.getElementById('typed-content');
+            const signature = document.getElementById('letter-signature');
+            const continueBtn = document.getElementById('letter-continue-btn');
+            const cursor = document.getElementById('type-cursor');
+
+            container.innerText = "";
+            signature.style.opacity = "0";
+            continueBtn.style.opacity = "0";
+            continueBtn.style.pointerEvents = "none";
+            cursor.style.display = "inline-block";
+
+            setTimeout(() => {
+                scrollBox.classList.add('unfolded');
+            }, 150);
+
+            const allWords = fullLetterParagraphs.join('').split(' ');
+            let wIdx = 0;
+
+            function typeNextWord() {
+                if (wIdx < allWords.length) {
+                    container.innerText += (wIdx === 0 ? '' : ' ') + allWords[wIdx];
+                    wIdx++;
+                    scrollBox.scrollTop = scrollBox.scrollHeight;
+                    setTimeout(typeNextWord, 68);
+                } else {
+                    cursor.style.display = "none";
+                    signature.style.opacity = "1";
+                    setTimeout(() => {
+                        continueBtn.style.opacity = "1";
+                        continueBtn.style.pointerEvents = "auto";
+                    }, 400);
+                }
+            }
+
+            setTimeout(typeNextWord, 900);
+        }
+
+        function fireConfettiRain() {
+            var duration = 4.5 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 }, colors: ['#fb7185', '#ffd166', '#ffffff'] });
+                confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 }, colors: ['#38bdf8', '#c084fc', '#ffd166'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    </script>
+</body>
+</html>
